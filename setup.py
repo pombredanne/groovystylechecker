@@ -10,7 +10,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='groovystylechecker',
-    version='0.0.2',
+    version='0.0.3',
     description='Groovy code style checker',
     long_description=long_description,
     url='https://github.com/sT331h0rs3/groovystylechecker',

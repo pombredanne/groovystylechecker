@@ -37,6 +37,21 @@ class GroovyStyleRule:
         return result
 
 
+def findLineNumberBySymbolNumber(text, symbol_number):
+    '''
+    Function to find line number by symbol number.
+
+    :param text: multiline text where we need to find a line
+    :param symbol_number: number of needed symbol in text
+    :returns: number of line, where symbol resides
+    '''
+    line_number = 0
+    for i in range(symbol_number):
+        if text[i] == '\n':
+            line_number += 1
+    return line_number
+
+
 # Rule #1.
 def noTrailingSemicolons(groovy_text):
     '''
@@ -99,19 +114,6 @@ def defInParams(groovy_text):
     :param groovy_text: text that we want to check for code style
     :returns: 0 if rule is met, 1 if rule is violated
     '''
-    def findLineNumberBySymbolNumber(text, symbol_number):
-        '''
-        Function to find line number by symbol number.
-
-        :param text: multiline text where we need to find a line
-        :param symbol_number: number of needed symbol in text
-        :returns: number of line, where symbol resides
-        '''
-        line_number = 0
-        for i in range(symbol_number):
-            if text[i] == '\n':
-                line_number += 1
-        return line_number
     errors = False
     function_params = []
     for param in re.finditer(r'def\s+[^\(]+\s*\(([^\)]+)\)', groovy_text):
@@ -128,10 +130,37 @@ def defInParams(groovy_text):
     return int(errors)
 
 
+# Rule #5.
+def defConstructor(groovy_text):
+    '''
+    Function that checks if def is used to define a constructor.
+
+    :param groovy_text: text that we want to check for code style
+    :returns: 0 if rule is met, 1 if rule is violated
+    '''
+    errors = False
+    groovy_classes = []
+    for line in groovy_text.splitlines():
+        class_name = re.search(r'class\s+(\S+)\s*{', line)
+        if class_name:
+            groovy_classes.append(class_name.groups()[0])
+    for class_name in groovy_classes:
+        found = re.search('def\s+' + class_name + '\s*\(.*\)\s*\{',
+                          groovy_text)
+        if found:
+            symbol_number = found.start(0) + found.group(0).find('def')
+            print('ERROR: def is used to define a constructor at'
+                  ' {} line.'.format(findLineNumberBySymbolNumber(
+                    groovy_text, symbol_number) + 1))
+            errors = True
+    return int(errors)
+
+
 # List of actual rules.
 ACTUAL_RULES = [
     GroovyStyleRule('no trailing semicolons', noTrailingSemicolons),
     GroovyStyleRule('optional returns', optionalReturn),
     GroovyStyleRule('only def or type used', defOrType),
-    GroovyStyleRule('def is not used in function parameters', defInParams)
+    GroovyStyleRule('def is not used in function parameters', defInParams),
+    GroovyStyleRule('def is not used to define a constructor', defConstructor)
 ]
