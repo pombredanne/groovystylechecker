@@ -27,6 +27,7 @@ setup(
     keywords='groovy codestyle checker',
     packages=['groovystylechecker'],
     python_requires='>=3',
+    tests_require=['pycodestyle'],
     entry_points={
         'console_scripts': [
             'groovystylechecker=groovystylechecker.__main__:main',
