@@ -8,4 +8,4 @@ GROOVY_2_4_11/src/spec/doc/style-guide.adoc
 '''
 
 __author__ = 'sT331h0rs3 <sT331h0rs3@gmail.com>'
-__version__ = '0.0.3'
+__version__ = '0.0.4'

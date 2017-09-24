@@ -156,11 +156,32 @@ def defConstructor(groovy_text):
     return int(errors)
 
 
+# Rule #6.
+def noPublicNeeded(groovy_text):
+    '''
+    Function that checks if public keyword is used.
+
+    :param groovy_text: text that we want to check for code style
+    :returns: 0 if rule is met, 1 if rule is violated
+    '''
+    errors = False
+    groovy_classes = []
+    lines = groovy_text.splitlines()
+    for line_number in range(len(lines)):
+        if re.search(r'^(\s*|.*\s+|.*[()[\]{}]?\s*)public\s+.+$',
+                     lines[line_number]):
+            print('ERROR: public keyword is used at {} line.'.format(
+                  line_number + 1))
+            errors = True
+    return int(errors)
+
+
 # List of actual rules.
 ACTUAL_RULES = [
     GroovyStyleRule('no trailing semicolons', noTrailingSemicolons),
     GroovyStyleRule('optional returns', optionalReturn),
     GroovyStyleRule('only def or type used', defOrType),
     GroovyStyleRule('def is not used in function parameters', defInParams),
-    GroovyStyleRule('def is not used to define a constructor', defConstructor)
+    GroovyStyleRule('def is not used to define a constructor', defConstructor),
+    GroovyStyleRule('do not use public keyword', noPublicNeeded)
 ]
